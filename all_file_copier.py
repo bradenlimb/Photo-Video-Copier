@@ -40,10 +40,15 @@ def exif_read(directoryInput,filename):
 #%% Base Location
 
 camera = 'R6'
-camera = 'iPhone 11'
+# camera = 'iPhone 11'
 
 source_root = r'C:\Users\Braden Limb\Downloads\iCloud Photos (1)\iCloud Photos'
 target_root = r'F:\Pictures'
+
+source_root = r'E:\DCIM\100CANON'
+target_root = r'F:\Pictures'
+
+# source_root = r'C:\Users\Braden Limb\Downloads\iCloud Photos (1)\iCloud Photos'
 
 not_copied = []
 move_files = True
@@ -51,7 +56,7 @@ if move_files:
     filenames = [ item for item in os.listdir(source_root) if os.path.isfile(os.path.join(source_root, item)) ]
     filenames = [ x for x in filenames if "._" not in x ]
     # filenames = [ x for x in filenames if "IMG_" in x ]
-    # filenames  = ['IMG_9514.HEIC']
+    # filenames  = ['IMG_3625.JPG']
     # filename = 'IMG_9514.HEIC'
     for filename in tqdm(filenames):
         
@@ -96,6 +101,18 @@ if move_files:
         make_dir(target_path)
         target_path = f'{target_path}\{camera}'
         make_dir(target_path)
+        if camera == 'R6':
+            target_path = f'{target_path}\{dt_local.strftime("%Y-%m-%d")}'
+            make_dir(target_path)
+            if filename[-4:] == '.JPG':
+                target_path = f'{target_path}\JPEG'
+                make_dir(target_path)
+            elif filename[-4:] == '.CR3':
+                target_path = f'{target_path}\RAW'
+                make_dir(target_path)
+            elif filename[-4:] == '.MP4':
+                target_path = f'{target_path}\Videos'
+                make_dir(target_path)
 
         target_file = f'{target_path}\{filename}'
         shutil.copyfile(filepath, target_file)

@@ -25,6 +25,8 @@ from win32com.propsys import propsys, pscon
 source_root = r'C:\Users\Braden Limb\Downloads\iCloud Photos (3)\iCloud Photos'
 target_root = r'E:\Video Diaries'
 
+
+
 rename_existing_files = False
 if rename_existing_files:
     filenames = [ item for item in os.listdir(target_root) if os.path.isfile(os.path.join(target_root, item)) ]
