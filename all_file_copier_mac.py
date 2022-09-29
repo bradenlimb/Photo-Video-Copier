@@ -19,7 +19,7 @@ from tqdm import tqdm
 import glob
 
 import pytz
-from win32com.propsys import propsys, pscon
+# from win32com.propsys import propsys, pscon
 
 def make_dir(path):
     isExist = os.path.exists(path)
@@ -40,16 +40,16 @@ def exif_read(directoryInput,filename):
 
 #%% Base Location
 
+
 camera = 'R6'
-camera = 'iPhone 11'
+# camera = 'iPhone 11'
 
-source_root = r'C:\Users\Braden Limb\Downloads\iCloud Photos (2)\iCloud Photos'
-target_root = r'E:\Pictures'
 
-# source_root = r'E:\DCIM\101CANON'
-# # target_root = r'F:\Pictures'
-# target_root = r'C:\Users\Braden Limb\OneDrive - Colostate\_Personal\Pictures'
+source_root = r'/Volumes/EOS_DIGITAL/DCIM/111CANON'
+target_root = r'/Volumes/Pho_Vid_2A/Pictures'
+# target_root = r'/Users/bradenlimb/Library/CloudStorage/OneDrive-Colostate/_Personal/Pictures'
 
+# source_root = r'C:\Users\Braden Limb\Downloads\iCloud Photos (1)\iCloud Photos'
 
 not_copied = []
 move_files = True
@@ -61,23 +61,24 @@ if move_files:
     # filename = 'IMG_9514.HEIC'
     for filename in tqdm(filenames):
         
-        filepath = f'{source_root}\{filename}'
+        filepath = f'{source_root}/{filename}'
         
         try:
             dt = get_date_taken(filepath)
         except:
             try:
                 dt = exif_read(source_root,filename)
+            # except:
+                # try:
+                     
+                    # properties = propsys.SHGetPropertyStoreFromParsingName(filepath)
+                    # dt = properties.GetValue(pscon.PKEY_Media_DateEncoded).GetValue()
             except:
                 try:
-                    properties = propsys.SHGetPropertyStoreFromParsingName(filepath)
-                    dt = properties.GetValue(pscon.PKEY_Media_DateEncoded).GetValue()
-                except:
-                    try:
-                       dt = os.path.getctime(filepath) 
-                    except: 
-                        not_copied.append(filename)
-                        continue
+                   dt = os.path.getctime(filepath) 
+                except: 
+                    not_copied.append(filename)
+                    continue
         
         if not isinstance(dt, datetime.datetime):
             
@@ -94,26 +95,29 @@ if move_files:
             except:
                 dt = datetime.datetime.fromtimestamp(int(dt))
             dt = dt.replace(tzinfo=pytz.timezone('UTC'))
-        dt_local = dt.astimezone(pytz.timezone('America/Denver'))
+        # dt_local = dt.astimezone(pytz.timezone('America/Denver'))
+        dt_local = dt.astimezone(pytz.timezone('Europe/Oslo'))
         
-        target_path = f'{target_root}\{dt_local.strftime("%Y")}'
+        
+        target_path = f'{target_root}/{dt_local.strftime("%Y")}'
         make_dir(target_path)
-        target_path = f'{target_path}\{dt_local.strftime("%m")} {dt_local.strftime("%B")}'
+        target_path = f'{target_path}/{dt_local.strftime("%m")} {dt_local.strftime("%B")}'
         make_dir(target_path)
-        target_path = f'{target_path}\{camera}'
+        target_path = f'{target_path}/{camera}'
         make_dir(target_path)
         if camera == 'R6':
-            target_path = f'{target_path}\{dt_local.strftime("%Y-%m-%d")}'
+            target_path = f'{target_path}/{dt_local.strftime("%Y-%m-%d")}'
             make_dir(target_path)
             if filename[-4:] == '.JPG':
-                target_path = f'{target_path}\JPEG'
+                target_path = f'{target_path}/JPEG'
                 make_dir(target_path)
             elif filename[-4:] == '.CR3':
-                target_path = f'{target_path}\RAW'
+                target_path = f'{target_path}/RAW'
                 make_dir(target_path)
             elif filename[-4:] == '.MP4':
-                target_path = f'{target_path}\Videos'
+                target_path = f'{target_path}/Videos'
                 make_dir(target_path)
+
 
         target_file = f'{target_path}/{filename}'
         if os.path.exists(target_file):

@@ -16,13 +16,14 @@ begin_time = datetime.datetime.now()
 import shutil
 import os
 from tqdm import tqdm
+import glob
 
 import pytz
 from win32com.propsys import propsys, pscon
 
 #%% Base Location
 
-source_root = r'C:\Users\Braden Limb\Downloads\iCloud Photos (3)\iCloud Photos'
+source_root = r'C:\Users\Braden Limb\Downloads\iCloud Photos (1)\iCloud Photos'
 target_root = r'E:\Video Diaries'
 
 
@@ -75,6 +76,10 @@ if move_files:
         dt_local_str = dt_local.strftime('%Y-%m-%d')
         new_filename = f'{dt_local_str} Video Diary{filename[-4:]}'
         target_file = f'{target_root}\{new_filename}'
+        if os.path.exists(target_file):
+            target_split = os.path.splitext(target_file)
+            numoffiles = len(glob.glob(rf'{target_split[0]}*'))
+            target_file = target_split[0] + f'_{numoffiles+1}' + target_split[1]
         shutil.copyfile(filepath, target_file)
 
 #%% End of Code
